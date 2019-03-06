@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/dogecash/dogecash-dashboard-backend#readme",
   "dependencies": {
+    "@dashevo/dashd-rpc": "^1.2.1",
     "dotenv": "^6.2.0",
     "express": "^4.16.4"
   }
