@@ -10,7 +10,7 @@ var config = {
     host: '127.0.0.1',
     port: process.env.rpcport
 };
-var rpc = new RpcClient(config);
+var client = new RpcClient(config);
 //Set RPC connection stuff
 //END RPC Setup
 
@@ -23,7 +23,7 @@ chaindiff = 0;
 nodeip = "";
 nethash = 10;
 nodeproto = 72018;
-nodestatus = "ENABLED";
+nodestatus = "NOT_ACTIVE";
 nodeconnects = 2;
 nodever = "2.5";
 nodeip = "127.0.0.1";
@@ -57,15 +57,30 @@ request(apiurl + 'api/getdifficulty', { json: false }, (err, res, body) => {
 
 //     console.log(result) // {result: {...}, error: null}
 //   })
-
-  rpc.cmd('masternode','status').then(function (result) {
-    // blockheight = result;
-
- console.log(result) // {result: {...}, error: null}
-}).catch(onFailure)
 function onFailure(err) {
+    if (err.toString().indexOf("This is not a masternode") >= 0){
+    //error this is not masternode
+    nodestatus = "NOT_A_MASTERNODE";}
     console.log(err)
   }
+
+client.cmd('masternode','status').then(function (result) {
+    if(result.code == 4){
+        nodestatus = "ENABLED";}
+}).catch(onFailure)
+
+
+client.cmd('getblockcount').then(function (result) {
+       blockheight = result;
+}).catch(onFailure)
+
+
+// client.batch()
+//   .getInfo()
+//   .call()
+//   .then(function (result) {
+//     console.log(result) // [{result: {...}, error: null}, {result: {...}, error: null}]
+//   })
 //Start getting data from jsonrpc from dogecashd
 
 
